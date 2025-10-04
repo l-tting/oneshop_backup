@@ -69,3 +69,6 @@ def get_access_token(request:Request):
 
 
 
+@router.get()
+def test():
+    pass
