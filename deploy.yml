@@ -1,1 +1,31 @@
-name:"Deploy DO"
+name: Deploy FastAPI App
+
+on:
+  push:
+    branches: [ main ]  # trigger on main branch push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_DEPLOY_KEY }}
+
+      - name: Copy FastAPI files to server
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" fastapi-oneshop/ \
+          ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/oneshop/
+
+      - name: Update FastAPI containers
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "
+            cd ~/oneshop &&
+            docker-compose -f oneshop.yml pull &&  # only pull updated images
+            docker-compose -f oneshop.yml up -d    # recreate only updated containers
+          "
