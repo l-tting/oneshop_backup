@@ -1,1 +1,23 @@
-name:"Deploy DO"
+name: Deploy FastAPI App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_DEPLOY_KEY }}
+
+      - name: Update FastAPI containers from Hub
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "
+            cd ~/oneshop &&
+            docker-compose -f oneshop.yml pull &&  # pull latest image from Hub
+            docker-compose -f oneshop.yml up -d    # update only containers with new images
+          "
