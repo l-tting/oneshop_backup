@@ -20,5 +20,8 @@ jobs:
             cd ~/oneshop &&
             docker-compose -f oneshop.yml pull &&  # pull latest image from Hub
             docker-compose -f oneshop.yml up -d    # update only containers with new images
+
+
+
             
           "
