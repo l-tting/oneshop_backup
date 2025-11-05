@@ -43,6 +43,7 @@ def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
     # Create response and attach cookie
     response = Response(
         content=f'{{"current_user": "{registered_user.full_name} || {registered_user.email}"}}',
+       
         media_type="application/json"
     )
     response.set_cookie(
