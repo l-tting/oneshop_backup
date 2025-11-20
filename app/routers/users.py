@@ -9,7 +9,7 @@ from datetime import timedelta
 import json
 
 
-router = APIRouter(prefix='api')
+router = APIRouter()
 
 @router.post("/register", response_model=dict, status_code=status.HTTP_201_CREATED)
 def register_user(user: schemas.User,company_id :int=Query(...), db: Session = Depends(get_db)):
